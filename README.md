@@ -25,8 +25,9 @@ npm run build
 ```
 
 ### 6. Gotowe pliki strony do osadzenia na serwerze będą znajdowały się w katalogu dist
-
+```
 ├── cpu-simulator/
 │   ├── public/
 │   ├── src/
 │   ├── dist/
+```
