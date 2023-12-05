@@ -32,18 +32,37 @@ import { NButton } from 'naive-ui';
         position: absolute;
         top: 5rem;
         left: 5rem;
+
+        @media only screen and (max-width: 768px) {
+            top: 1rem;
+            left: 1rem;
+        }
     }
 
     h1 {
         font-size: 3.2rem;
+
+        @media only screen and (max-width: 768px) {
+            padding-top: 2rem;
+            font-size: 2.4rem;
+        }
     }
     .intel-8086-photo {
         max-width: 250px;
+
+        @media only screen and (max-width: 768px) {
+            max-width: 150px;
+        }
     }
     .intel-8086-description {
         padding-top: 5rem;
         text-align: justify;
         font-size: 1.8rem;
+
+        @media only screen and (max-width: 768px) {
+            padding-top: 2rem;
+            font-size: 1.2rem;
+        }
     }
 }
 </style>

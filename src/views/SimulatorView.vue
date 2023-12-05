@@ -14,6 +14,11 @@ import BackHome from '../components/BackHome.vue';
         position: absolute;
         top: 5rem;
         left: 5rem;
+
+        @media only screen and (max-width: 768px) {
+            top: 1rem;
+            left: 1rem;
+        }
     }
 }
 </style>
