@@ -62,6 +62,7 @@ import { NButton } from 'naive-ui';
         @media only screen and (max-width: 768px) {
             padding-top: 2rem;
             font-size: 1.2rem;
+            line-height: 35px;
         }
     }
 }
