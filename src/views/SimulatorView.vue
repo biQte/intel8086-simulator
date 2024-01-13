@@ -35,13 +35,20 @@ const aspectRatio = computed(() => width.value / height.value);
 const loader = new GLTFLoader();
 
 let renderer: THREE.WebGLRenderer;
+let camera: THREE.PerspectiveCamera;
 
 const updateRenderer = () => {
     renderer.setSize(width.value / 3, height.value / 3);
     renderer.setPixelRatio(window.devicePixelRatio);
 };
 
+const updateCamera = () => {
+    camera.aspect = aspectRatio.value;
+    camera.updateProjectionMatrix();
+};
+
 watch(aspectRatio, updateRenderer);
+watch(aspectRatio, updateCamera);
 
 const handleMouseMove = (event: MouseEvent) => {
     mouseX = event.clientX - windowHalfX * -0.1;
@@ -65,7 +72,7 @@ onMounted(async () => {
 
     const scene = new THREE.Scene();
 
-    const camera = new THREE.PerspectiveCamera(45, aspectRatio.value, 1, 1000);
+    camera = new THREE.PerspectiveCamera(45, aspectRatio.value, 1, 1000);
     camera.position.set(4, 5, 11);
     camera.lookAt(0, 0, 0);
 
