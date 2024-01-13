@@ -6,8 +6,9 @@ import {
     NLoadingBarProvider,
     NDialogProvider,
     NNotificationProvider,
+    darkTheme,
 } from 'naive-ui';
-import type { MessageProviderProps, GlobalThemeOverrides } from 'naive-ui';
+import type { MessageProviderProps, GlobalThemeOverrides, GlobalTheme } from 'naive-ui';
 import AppWrapperView from './views/AppWrapperView.vue';
 
 const themeOverrides: GlobalThemeOverrides = {
@@ -21,12 +22,14 @@ const themeOverrides: GlobalThemeOverrides = {
     },
 };
 
+const theme = ref<GlobalTheme | null>(darkTheme);
+
 const messagePlacement = ref<MessageProviderProps['placement']>('top');
 </script>
 
 <template>
     <div class="main">
-        <n-config-provider :theme-overrides="themeOverrides">
+        <n-config-provider :theme-overrides="themeOverrides" :theme="theme">
             <n-loading-bar-provider>
                 <n-message-provider :placement="messagePlacement">
                     <n-dialog-provider>

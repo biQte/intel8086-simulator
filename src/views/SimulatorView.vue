@@ -4,6 +4,11 @@ import BackHome from '../components/BackHome.vue';
 import * as THREE from 'three';
 import { ref, onMounted, computed, watch } from 'vue';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { useMessage } from 'naive-ui';
+
+const message = useMessage();
+
+const loaded = ref<boolean>(false);
 
 const experience = ref<HTMLCanvasElement | null>(null);
 
@@ -33,7 +38,6 @@ const updateRenderer = () => {
 watch(aspectRatio, updateRenderer);
 
 const handleMouseMove = (event: MouseEvent) => {
-    console.log(event);
     mouseX = event.clientX - windowHalfX * -0.1;
     mouseY = event.clientY - windowHalfY * -2;
     targetRotation.x = mouseX;
@@ -81,7 +85,6 @@ onMounted(async () => {
     // @ts-expect-error
     let mesh;
 
-    console.log('Start loading');
     loader.load(
         '/intel8086.glb',
         function (gltf) {
@@ -98,16 +101,15 @@ onMounted(async () => {
             mesh.rotateX(120);
             scene.add(mesh);
             groundMesh.visible = false;
+            loaded.value = true;
         },
         function (xhr) {
-            console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+            message.success('Załadowano ' + (xhr.loaded / xhr.total) * 100 + '%');
         },
         function (error) {
-            console.log('error happened', error);
+            message.error('Wystąpił bład podczas ładowania modelu 3D. Błąd: ' + error);
         },
     );
-
-    console.log('Loaded');
 
     const animate = () => {
         currentRotation.x = (targetRotation.x - currentRotation.x) * rotationSpeed;
@@ -131,7 +133,7 @@ onMounted(async () => {
 <template>
     <div class="simulator-view" @mousemove="handleMouseMove">
         <BackHome class="back-home" />
-        <canvas ref="experience" />
+        <canvas ref="experience" :class="{ hidden: !loaded }" />
     </div>
 </template>
 
@@ -149,5 +151,9 @@ onMounted(async () => {
             left: 1rem;
         }
     }
+}
+
+.hidden {
+    visibility: hidden;
 }
 </style>
