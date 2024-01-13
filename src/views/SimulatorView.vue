@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core';
 import BackHome from '../components/BackHome.vue';
+import TheRegistry from '../components/TheRegistry.vue';
 import * as THREE from 'three';
 import { ref, onMounted, computed, watch } from 'vue';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -156,6 +157,7 @@ onMounted(async () => {
     <div class="simulator-view" @mousemove="handleMouseMove">
         <BackHome class="back-home" />
         <canvas ref="experience" :class="{ hidden: !loaded }" />
+        <TheRegistry />
     </div>
 </template>
 

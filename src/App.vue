@@ -19,6 +19,14 @@ const themeOverrides: GlobalThemeOverrides = {
     Button: {
         textColorText: '#ffffff',
         textColorTextHover: '#535bf2',
+        borderHover: '1px solid #535bf2',
+        textColorHover: '#535bf2',
+        borderFocus: '1px solid #535bf2',
+        textColorFocus: '#535bf2',
+    },
+    Input: {
+        borderFocus: '1px solid #535bf2',
+        borderHover: '1px solid #535bf2',
     },
 };
 
