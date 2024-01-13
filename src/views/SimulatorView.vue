@@ -4,9 +4,10 @@ import BackHome from '../components/BackHome.vue';
 import * as THREE from 'three';
 import { ref, onMounted, computed, watch } from 'vue';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { useMessage } from 'naive-ui';
+import { useMessage, MessageReactive, MessageType } from 'naive-ui';
 
 const message = useMessage();
+let msgReactive: MessageReactive | null = null;
 
 const loaded = ref<boolean>(false);
 
@@ -88,6 +89,10 @@ onMounted(async () => {
     loader.load(
         '/intel8086.glb',
         function (gltf) {
+            msgReactive = message.create('Trwa ładowanie modelu 3D', {
+                type: 'info',
+                duration: 10000,
+            });
             gltf.scene.scale.set(15, 15, 15);
             mesh = gltf.scene;
             mesh.traverse((child) => {
@@ -102,6 +107,10 @@ onMounted(async () => {
             scene.add(mesh);
             groundMesh.visible = false;
             loaded.value = true;
+            if (msgReactive) {
+                msgReactive.content = 'Załadowano model 3D';
+                msgReactive.type = 'success';
+            }
         },
         function (xhr) {
             if (xhr.total > 0) {
