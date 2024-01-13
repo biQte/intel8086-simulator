@@ -104,7 +104,10 @@ onMounted(async () => {
             loaded.value = true;
         },
         function (xhr) {
-            message.success('Załadowano ' + (xhr.loaded / xhr.total) * 100 + '%');
+            if (xhr.total > 0) {
+                const progress = (xhr.loaded / xhr.total) * 100;
+                message.success('Załadowano ' + progress.toFixed(2) + '%');
+            }
         },
         function (error) {
             message.error('Wystąpił bład podczas ładowania modelu 3D. Błąd: ' + error);
