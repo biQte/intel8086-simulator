@@ -83,7 +83,7 @@ onMounted(async () => {
 
     console.log('Start loading');
     loader.load(
-        '/public/intel8086.glb',
+        '/intel8086.glb',
         function (gltf) {
             gltf.scene.scale.set(15, 15, 15);
             mesh = gltf.scene;
