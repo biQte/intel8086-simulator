@@ -58,7 +58,8 @@ const handleRegistryValueChange = () => {
     }
     newRegistryValue.value = parseInt(newRegistryValue.value);
     if (isNaN(newRegistryValue.value)) {
-        message.error('Wartość dla rejestru musi być liczbą!');
+        newRegistryValue.value = null;
+        message.error('Wartość dla rejestru musi być liczbą!');
         return;
     }
     if (newRegistryValue.value < 0 || newRegistryValue.value > 10) {
