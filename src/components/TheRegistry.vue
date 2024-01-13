@@ -20,8 +20,11 @@
 
 import { NTable, NButton, NDropdown, NInput, useMessage } from 'naive-ui';
 import { ref } from 'vue';
+import { useWindowSize } from '@vueuse/core';
 
 const message = useMessage();
+
+const { width } = useWindowSize();
 
 const axIndex = 0;
 const bxIndex = 1;
@@ -105,7 +108,7 @@ const handleChangingRegistrySelect = (key: number) => {
             <n-input placeholder="Podaj wartość" v-model:value="newRegistryValue"></n-input>
             <n-button type="info" @click="handleRegistryValueChange">ZMIEŃ</n-button>
         </div>
-        <n-table>
+        <n-table v-if="width > 720">
             <thead>
                 <tr>
                     <th>AX</th>
@@ -115,6 +118,22 @@ const handleChangingRegistrySelect = (key: number) => {
                 </tr>
             </thead>
             <tbody>
+                <tr>
+                    <td>{{ registry[axIndex] }}</td>
+                    <td>{{ registry[bxIndex] }}</td>
+                    <td>{{ registry[cxIndex] }}</td>
+                    <td>{{ registry[dxIndex] }}</td>
+                </tr>
+            </tbody>
+        </n-table>
+        <n-table v-else>
+            <tbody>
+                <tr>
+                    <td>AX</td>
+                    <td>BX</td>
+                    <td>CX</td>
+                    <td>DX</td>
+                </tr>
                 <tr>
                     <td>{{ registry[axIndex] }}</td>
                     <td>{{ registry[bxIndex] }}</td>
@@ -138,6 +157,9 @@ const handleChangingRegistrySelect = (key: number) => {
         display: flex;
         flex-direction: row;
         gap: 1rem;
+        @media only screen and (max-width: 720px) {
+            flex-direction: column;
+        }
     }
 }
 th {
