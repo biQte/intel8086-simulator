@@ -78,6 +78,7 @@ onMounted(async () => {
     spotLight.shadow.bias = -0.00001;
     scene.add(spotLight);
 
+    // @ts-expect-error
     let mesh;
 
     console.log('Start loading');
@@ -87,6 +88,7 @@ onMounted(async () => {
             gltf.scene.scale.set(15, 15, 15);
             mesh = gltf.scene;
             mesh.traverse((child) => {
+                // @ts-expect-error
                 if (child.isMesh) {
                     child.castShadow = true;
                     child.receiveShadow = true;
@@ -107,12 +109,10 @@ onMounted(async () => {
 
     console.log('Loaded');
 
-    const clock = new THREE.Clock();
-    let isEasing = true;
-
     const animate = () => {
         currentRotation.x = (targetRotation.x - currentRotation.x) * rotationSpeed;
         currentRotation.y = (targetRotation.y - currentRotation.y) * rotationSpeed;
+        // @ts-expect-error
         if (mesh) {
             mesh.rotation.set(
                 (currentRotation.y * Math.PI) / 180,
