@@ -130,14 +130,18 @@ const handleChangingRegistrySelect = (key: number) => {
             <tbody>
                 <tr>
                     <td>AX</td>
-                    <td>BX</td>
-                    <td>CX</td>
-                    <td>DX</td>
+                    <td>{{ registry[axIndex] }}</td>
                 </tr>
                 <tr>
-                    <td>{{ registry[axIndex] }}</td>
+                    <td>BX</td>
                     <td>{{ registry[bxIndex] }}</td>
+                </tr>
+                <tr>
+                    <td>CX</td>
                     <td>{{ registry[cxIndex] }}</td>
+                </tr>
+                <tr>
+                    <td>DX</td>
                     <td>{{ registry[dxIndex] }}</td>
                 </tr>
             </tbody>
