@@ -9,6 +9,11 @@ import { useMessage, MessageReactive } from 'naive-ui';
 const message = useMessage();
 let msgReactive: MessageReactive | null = null;
 
+msgReactive = message.create('Trwa ładowanie modelu 3D', {
+    type: 'info',
+    duration: 10000,
+});
+
 const loaded = ref<boolean>(false);
 
 const experience = ref<HTMLCanvasElement | null>(null);
@@ -89,10 +94,6 @@ onMounted(async () => {
     loader.load(
         '/intel8086.glb',
         function (gltf) {
-            msgReactive = message.create('Trwa ładowanie modelu 3D', {
-                type: 'info',
-                duration: 10000,
-            });
             gltf.scene.scale.set(15, 15, 15);
             mesh = gltf.scene;
             mesh.traverse((child) => {
@@ -116,7 +117,12 @@ onMounted(async () => {
             console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
         },
         function (error) {
-            message.error('Wystąpił bład podczas ładowania modelu 3D. Błąd: ' + error);
+            if (msgReactive) {
+                msgReactive.content = 'Wystąpił błąd podczas ładowania modelu 3D. Błąd: ' + error;
+                msgReactive.type = 'error';
+            } else {
+                message.error('Wystąpił bład podczas ładowania modelu 3D. Błąd: ' + error);
+            }
         },
     );
 
