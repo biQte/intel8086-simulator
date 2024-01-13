@@ -21,6 +21,26 @@
 import { NTable, NButton, NDropdown, NInput } from 'naive-ui';
 import { ref } from 'vue';
 
+const axIndex = 0;
+const bxIndex = 1;
+const cxIndex = 2;
+const dxIndex = 3;
+
+const registry = ref([0, 0, 0, 0]);
+
+const fillRegistry = () => {
+    registry.value[axIndex] = Math.floor(Math.random() * 10) + 1;
+    registry.value[bxIndex] = Math.floor(Math.random() * 10) + 1;
+    registry.value[cxIndex] = Math.floor(Math.random() * 10) + 1;
+    registry.value[dxIndex] = Math.floor(Math.random() * 10) + 1;
+};
+
+fillRegistry();
+
+const generateNewRegistry = () => {
+    fillRegistry();
+};
+
 const changingRegistryOptionsLabel = ref('Wybierz rejestr którego wartość chcesz zmienić');
 const changingRegistryOptions = ref([
     {
@@ -66,14 +86,14 @@ const handleChangingRegistrySelect = (key: string | number) => {
             </thead>
             <tbody>
                 <tr>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
+                    <td>{{ registry[axIndex] }}</td>
+                    <td>{{ registry[bxIndex] }}</td>
+                    <td>{{ registry[cxIndex] }}</td>
+                    <td>{{ registry[dxIndex] }}</td>
                 </tr>
             </tbody>
         </n-table>
-        <n-button> RESET </n-button>
+        <n-button @click="generateNewRegistry"> GENERUJ NOWY REJESTR </n-button>
     </div>
 </template>
 
