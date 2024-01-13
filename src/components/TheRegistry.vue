@@ -18,8 +18,10 @@
  * IDIV
  */
 
-import { NTable, NButton, NDropdown, NInput } from 'naive-ui';
+import { NTable, NButton, NDropdown, NInput, useMessage } from 'naive-ui';
 import { ref } from 'vue';
+
+const message = useMessage();
 
 const axIndex = 0;
 const bxIndex = 1;
@@ -27,6 +29,10 @@ const cxIndex = 2;
 const dxIndex = 3;
 
 const registry = ref([0, 0, 0, 0]);
+
+const newRegistryValue = ref<any>(null);
+
+const selectedRegistryOption = ref<number | null>(null);
 
 const fillRegistry = () => {
     registry.value[axIndex] = Math.floor(Math.random() * 10) + 1;
@@ -41,27 +47,50 @@ const generateNewRegistry = () => {
     fillRegistry();
 };
 
+const handleRegistryValueChange = () => {
+    if (!selectedRegistryOption.value) {
+        message.error('Wybierz rejestr którego wartość chcesz zmienić!');
+        return;
+    }
+    if (!newRegistryValue.value) {
+        message.error('Podaj nową wartość dla rejestru!');
+        return;
+    }
+    newRegistryValue.value = parseInt(newRegistryValue.value);
+    if (isNaN(newRegistryValue.value)) {
+        message.error('Wartość dla rejestru musi być liczbą!');
+        return;
+    }
+    if (newRegistryValue.value < 0 || newRegistryValue.value > 10) {
+        message.error('Wartość dla rejestru poza zakresem!');
+        return;
+    }
+
+    registry.value[selectedRegistryOption.value] = newRegistryValue.value;
+};
+
 const changingRegistryOptionsLabel = ref('Wybierz rejestr którego wartość chcesz zmienić');
 const changingRegistryOptions = ref([
     {
         label: 'AX',
-        key: 'ax',
+        key: axIndex,
     },
     {
         label: 'BX',
-        key: 'bx',
+        key: bxIndex,
     },
     {
         label: 'CX',
-        key: 'cx',
+        key: cxIndex,
     },
     {
         label: 'DX',
-        key: 'dx',
+        key: dxIndex,
     },
 ]);
 
-const handleChangingRegistrySelect = (key: string | number) => {
+const handleChangingRegistrySelect = (key: number) => {
+    selectedRegistryOption.value = key;
     changingRegistryOptionsLabel.value = changingRegistryOptions.value.find((option) => option.key === key)!.label;
 };
 </script>
@@ -72,8 +101,8 @@ const handleChangingRegistrySelect = (key: string | number) => {
             <n-dropdown trigger="hover" :options="changingRegistryOptions" @select="handleChangingRegistrySelect">
                 <n-button>{{ changingRegistryOptionsLabel }}</n-button>
             </n-dropdown>
-            <n-input placeholder="Podaj wartość"></n-input>
-            <n-button type="info">ZMIEŃ</n-button>
+            <n-input placeholder="Podaj wartość" v-model:value="newRegistryValue"></n-input>
+            <n-button type="info" @click="handleRegistryValueChange">ZMIEŃ</n-button>
         </div>
         <n-table>
             <thead>
