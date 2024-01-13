@@ -4,7 +4,7 @@ import BackHome from '../components/BackHome.vue';
 import * as THREE from 'three';
 import { ref, onMounted, computed, watch } from 'vue';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { useMessage, MessageReactive, MessageType } from 'naive-ui';
+import { useMessage, MessageReactive } from 'naive-ui';
 
 const message = useMessage();
 let msgReactive: MessageReactive | null = null;
@@ -113,10 +113,7 @@ onMounted(async () => {
             }
         },
         function (xhr) {
-            if (xhr.total > 0) {
-                const progress = (xhr.loaded / xhr.total) * 100;
-                message.success('Załadowano ' + progress.toFixed(2) + '%');
-            }
+            console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
         },
         function (error) {
             message.error('Wystąpił bład podczas ładowania modelu 3D. Błąd: ' + error);
