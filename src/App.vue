@@ -39,7 +39,7 @@ const themeOverrides: GlobalThemeOverrides = {
     },
 };
 
-const theme = ref<GlobalTheme | null>(darkTheme);
+const theme = ref<GlobalTheme>(darkTheme);
 
 const messagePlacement = ref<MessageProviderProps['placement']>('top');
 </script>
