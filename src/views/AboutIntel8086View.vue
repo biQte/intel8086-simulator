@@ -35,6 +35,10 @@ import { NButton } from 'naive-ui';
 
 <style scoped lang="scss">
 .about-intel-8086-view {
+    padding-top: 2rem;
+    @media only screen and (max-width: 768px) {
+        padding-top: 20rem;
+    }
     .back-home {
         position: absolute;
         top: 5rem;
