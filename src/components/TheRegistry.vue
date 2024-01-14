@@ -27,8 +27,8 @@ const secondRegistryDropdown = ref<boolean>(false);
 const firstRegistryDropdownSelectedOption = ref<number | null>(null);
 const secondRegistryDropdownSelectedOption = ref<number | null>(null);
 
-const firstRegistryDropdownSelectedOptionLabel = ref<string>('Wybierz rejestr');
-const secondRegistryDropdownSelectedOptionLabel = ref<string>('Wybierz rejestr');
+const firstRegistryDropdownSelectedOptionLabel = ref<string | null>(null);
+const secondRegistryDropdownSelectedOptionLabel = ref<string | null>(null);
 
 const fillRegistry = () => {
     registry.value[axIndex] = Math.floor(Math.random() * 10) + 1;
@@ -57,10 +57,6 @@ const handleRegistryValueChange = () => {
     if (isNaN(newRegistryValue.value)) {
         newRegistryValue.value = null;
         message.error('Wartość dla rejestru musi być liczbą!');
-        return;
-    }
-    if (newRegistryValue.value < 0 || newRegistryValue.value > 10) {
-        message.error('Wartość dla rejestru poza zakresem!');
         return;
     }
 
@@ -92,6 +88,9 @@ const changingRegistryOptions = ref([
     },
 ]);
 
+const firstRegistryDropdownOptions = ref(changingRegistryOptions.value.slice());
+const secondRegistryDropdownOptions = ref(changingRegistryOptions.value.slice());
+
 const registryInstructionsOptionsLabel = ref('Wybierz instrukcję jaką chcesz wykonać');
 const registryInstructionsOptions = ref([
     {
@@ -99,48 +98,104 @@ const registryInstructionsOptions = ref([
         key: 0,
         needsDropdown: 2,
         tooltip: 'Kopiuje wartość z jednego rejestru do drugiego.',
+        instruction: function () {
+            registry.value[secondRegistryDropdownSelectedOption.value!] =
+                registry.value[firstRegistryDropdownSelectedOption.value!];
+            message.success(
+                `Zawartość rejestru ${firstRegistryDropdownSelectedOptionLabel.value} została przekopiowana do rejestru ${secondRegistryDropdownSelectedOptionLabel.value}`,
+            );
+        },
     },
     {
         label: 'XCHG',
         kay: 1,
         needsDropdown: 2,
         tooltip: 'Zamienia miejscami wartości dwóch rejestrów.',
+        instruction: function () {
+            const oldFirstRegistryValue = registry.value[firstRegistryDropdownSelectedOption.value!];
+            registry.value[firstRegistryDropdownSelectedOption.value!] =
+                registry.value[secondRegistryDropdownSelectedOption.value!];
+            registry.value[secondRegistryDropdownSelectedOption.value!] = oldFirstRegistryValue;
+            message.success(
+                `Zawartość rejestru ${firstRegistryDropdownSelectedOptionLabel.value} została zamieniona z wartością rejestru ${secondRegistryDropdownSelectedOptionLabel.value}`,
+            );
+        },
     },
     {
         label: 'INC',
         key: 2,
         needsDropdown: 1,
         tooltip: 'Zwiększa wartość rejestru o 1.',
+        instruction: function () {
+            registry.value[firstRegistryDropdownSelectedOption.value!]++;
+            message.success(
+                `Zawartość rejestru ${firstRegistryDropdownSelectedOptionLabel.value} została zwiększona o 1`,
+            );
+        },
     },
     {
         label: 'DEC',
         key: 3,
         needsDropdown: 1,
         tooltip: 'Zmniejsza wartość rejestru o 1.',
+        instruction: function () {
+            registry.value[firstRegistryDropdownSelectedOption.value!]--;
+            message.success(
+                `Zawartość rejestru ${firstRegistryDropdownSelectedOptionLabel.value} została zmniejszona o 1`,
+            );
+        },
     },
     {
         label: 'NOT',
         key: 4,
         needsDropdown: 1,
         tooltip: 'Zmienia każdy bit w rejestrze na przeciwny.',
+        instruction: function () {
+            registry.value[firstRegistryDropdownSelectedOption.value!] =
+                ~registry.value[firstRegistryDropdownSelectedOption.value!];
+            message.success(
+                `Zawartość rejestru ${firstRegistryDropdownSelectedOptionLabel.value} została zanegowana bitowo`,
+            );
+        },
     },
     {
         label: 'NEG',
         key: 5,
         needsDropdown: 1,
         tooltip: 'Zmienia znak wartości w danym rejestrze (dodatni na ujemny i odwrotnie).',
+        instruction: function () {
+            registry.value[firstRegistryDropdownSelectedOption.value!] =
+                -registry.value[firstRegistryDropdownSelectedOption.value!];
+            message.success(`Zmieniono znak wartości rejestru ${firstRegistryDropdownSelectedOptionLabel.value}`);
+        },
     },
     {
         label: 'ADD',
         key: 6,
         needsDropdown: 2,
         tooltip: 'Dodaje wartość rejestru do wartości drugiego rejestru.',
+        instruction: function () {
+            registry.value[firstRegistryDropdownSelectedOption.value!] =
+                registry.value[firstRegistryDropdownSelectedOption.value!] +
+                registry.value[secondRegistryDropdownSelectedOption.value!];
+            message.success(
+                `Zawartość rejestru ${secondRegistryDropdownSelectedOptionLabel.value} została dodana zawartości rejestru ${firstRegistryDropdownSelectedOptionLabel.value}`,
+            );
+        },
     },
     {
         label: 'SUB',
         key: 7,
         needsDropdown: 2,
         tooltip: 'Odejmuje wartość drugiego rejestru od wartości pierwszego rejestru.',
+        instruction: function () {
+            registry.value[firstRegistryDropdownSelectedOption.value!] =
+                registry.value[secondRegistryDropdownSelectedOption.value!] -
+                registry.value[secondRegistryDropdownSelectedOption.value!];
+            message.success(
+                `Wartość rejestru ${firstRegistryDropdownSelectedOptionLabel.value} została odjęta od wartości rejestru ${secondRegistryDropdownSelectedOptionLabel.value} i umieszczona w rejestrze ${firstRegistryDropdownSelectedOptionLabel.value}`,
+            );
+        },
     },
     {
         label: 'AND',
@@ -148,6 +203,14 @@ const registryInstructionsOptions = ref([
         needsDropdown: 2,
         tooltip:
             'Działa na każdym bicie w pierwszym rejestrze, łącząc je z odpowiadającym bitem w drugim rejestrze. Wynikowa wartość bitowa to 1 tylko wtedy, gdy oba bity są jedynkami.',
+        instruction: function () {
+            registry.value[firstRegistryDropdownSelectedOption.value!] =
+                registry.value[firstRegistryDropdownSelectedOption.value!] &
+                registry.value[secondRegistryDropdownSelectedOption.value!];
+            message.success(
+                `Na wartościach rejestrów ${firstRegistryDropdownSelectedOptionLabel.value} i ${secondRegistryDropdownSelectedOptionLabel.value} została przeprowadzona operacja logiczna AND i wynik został zapisany w rejestrze ${firstRegistryDropdownSelectedOptionLabel.value}`,
+            );
+        },
     },
     {
         label: 'OR',
@@ -155,6 +218,14 @@ const registryInstructionsOptions = ref([
         needsDropdown: 2,
         tooltip:
             'Mnoży każde bit w pierwszym rejestrze przez odpowiadający mu bit w drugim rejestrze. Wynikowa wartość bitowa to 1, gdy co najmniej jeden z bitów jest równy 1.',
+        instruction: function () {
+            registry.value[firstRegistryDropdownSelectedOption.value!] =
+                registry.value[firstRegistryDropdownSelectedOption.value!] |
+                registry.value[secondRegistryDropdownSelectedOption.value!];
+            message.success(
+                `Na wartościach rejestrów ${firstRegistryDropdownSelectedOptionLabel.value} i ${secondRegistryDropdownSelectedOptionLabel.value} została przeprowadzona operacja logiczna OR i wynik został zapisany w rejestrze ${firstRegistryDropdownSelectedOptionLabel.value}`,
+            );
+        },
     },
     {
         label: 'XOR',
@@ -162,6 +233,14 @@ const registryInstructionsOptions = ref([
         needsDropdown: 2,
         tooltip:
             'Mnoży każdy bit w pierwszym rejestrze przez odpowiadający mu bit w drugim rejestrze. Wynikowa wartość bitowa to 1, gdy tylko jeden z bitów jest równy 1.',
+        instruction: function () {
+            registry.value[firstRegistryDropdownSelectedOption.value!] =
+                registry.value[firstRegistryDropdownSelectedOption.value!] ^
+                registry.value[secondRegistryDropdownSelectedOption.value!];
+            message.success(
+                `Na wartościach rejestrów ${firstRegistryDropdownSelectedOptionLabel.value} i ${secondRegistryDropdownSelectedOptionLabel.value} została przeprowadzona operacja logiczna XOR i wynik został zapisany w rejestrze ${firstRegistryDropdownSelectedOptionLabel.value}`,
+            );
+        },
     },
     {
         label: 'MUL',
@@ -169,6 +248,14 @@ const registryInstructionsOptions = ref([
         needsDropdown: 2,
         tooltip:
             'Mnoży wartość w danym rejestrze przez wartość w drugim rejestrze, a wynik umieszcza w dwóch rejestrach.',
+        instruction: function () {
+            registry.value[firstRegistryDropdownSelectedOption.value!] =
+                Math.abs(registry.value[firstRegistryDropdownSelectedOption.value!]) *
+                Math.abs(registry.value[secondRegistryDropdownSelectedOption.value!]);
+            message.success(
+                `Wartość rejestru ${firstRegistryDropdownSelectedOptionLabel.value} została przemnożona bez znaku przez wartość rejestru ${secondRegistryDropdownSelectedOptionLabel.value} i zapisana w rejestrze ${firstRegistryDropdownSelectedOptionLabel.value}`,
+            );
+        },
     },
     {
         label: 'IMUL',
@@ -176,6 +263,14 @@ const registryInstructionsOptions = ref([
         needsDropdown: 2,
         tooltip:
             'Mnoży wartość w danym rejestrze przez wartość w drugim rejestrze z uwzględnieniem znaku, a wynik umieszcza w dwóch rejestrach.',
+        instruction: function () {
+            registry.value[firstRegistryDropdownSelectedOption.value!] =
+                registry.value[firstRegistryDropdownSelectedOption.value!] *
+                registry.value[secondRegistryDropdownSelectedOption.value!];
+            message.success(
+                `Wartość rejestru ${firstRegistryDropdownSelectedOptionLabel.value} została przemnożona ze znakiem przez wartość rejestru ${secondRegistryDropdownSelectedOptionLabel.value} i zapisana w rejestrze ${firstRegistryDropdownSelectedOptionLabel.value}`,
+            );
+        },
     },
     {
         label: 'DIV',
@@ -183,6 +278,14 @@ const registryInstructionsOptions = ref([
         needsDropdown: 2,
         tooltip:
             'Dzieli wartość w pierwszym rejestrze przez wartość w drugim rejestrze, wynik umieszcza w pierwszym rejestrze, a resztę w drugim.',
+        instruction: function () {
+            registry.value[firstRegistryDropdownSelectedOption.value!] =
+                Math.abs(registry.value[firstRegistryDropdownSelectedOption.value!]) /
+                Math.abs(registry.value[secondRegistryDropdownSelectedOption.value!]);
+            message.success(
+                `Wartość rejestru ${firstRegistryDropdownSelectedOptionLabel.value} została podzielona bez znaku przez wartość rejestru ${secondRegistryDropdownSelectedOptionLabel.value} i zapisana w rejestrze ${firstRegistryDropdownSelectedOptionLabel.value}`,
+            );
+        },
     },
     {
         label: 'IDIV',
@@ -190,6 +293,14 @@ const registryInstructionsOptions = ref([
         needsDropdown: 2,
         tooltip:
             'Dzieli wartość w pierwszym rejestrze przez wartość w drugim rejestrze z uwzględnieniem znaku, wynik umieszcza w pierwszym rejestrze, a resztę w drugim.',
+        instruction: function () {
+            registry.value[firstRegistryDropdownSelectedOption.value!] =
+                registry.value[firstRegistryDropdownSelectedOption.value!] /
+                registry.value[secondRegistryDropdownSelectedOption.value!];
+            message.success(
+                `Wartość rejestru ${firstRegistryDropdownSelectedOptionLabel.value} została podzielona ze znakiem przez wartość rejestru ${secondRegistryDropdownSelectedOptionLabel.value} i zapisana w rejestrze ${firstRegistryDropdownSelectedOptionLabel.value}`,
+            );
+        },
     },
 ]);
 
@@ -200,6 +311,10 @@ const handleChangingRegistrySelect = (key: number) => {
 };
 
 const handleRegistryInstructionSelect = (key: number) => {
+    firstRegistryDropdownSelectedOption.value = null;
+    firstRegistryDropdownSelectedOptionLabel.value = null;
+    secondRegistryDropdownSelectedOption.value = null;
+    secondRegistryDropdownSelectedOptionLabel.value = null;
     selectedInstruction.value = key;
     registryInstructionsOptionsLabel.value =
         'Wybrana instrukcja: ' + registryInstructionsOptions.value.find((option) => option.key === key)!.label;
@@ -223,14 +338,67 @@ const handleRegistryInstructionSelect = (key: number) => {
 
 const handleFirstRegistryDropdownSelect = (key: number) => {
     firstRegistryDropdownSelectedOption.value = key;
-    firstRegistryDropdownSelectedOptionLabel.value =
-        'Wybrany rejestr: ' + changingRegistryOptions.value.find((option) => option.key === key)!.label;
+    firstRegistryDropdownSelectedOptionLabel.value = changingRegistryOptions.value.find(
+        (option) => option.key === key,
+    )!.label;
+    secondRegistryDropdownOptions.value.forEach((option: any) => {
+        option.disabled = false;
+    });
+    // @ts-expect-error
+    secondRegistryDropdownOptions.value[key]['disabled'] = true;
 };
 
 const handleSecondRegistryDropdownSelect = (key: number) => {
     secondRegistryDropdownSelectedOption.value = key;
-    secondRegistryDropdownSelectedOptionLabel.value =
-        'Wybrany rejestr: ' + changingRegistryOptions.value.find((option) => option.key === key)!.label;
+    secondRegistryDropdownSelectedOptionLabel.value = changingRegistryOptions.value.find(
+        (option) => option.key === key,
+    )!.label;
+    firstRegistryDropdownOptions.value.forEach((option: any) => {
+        option.disabled = false;
+    });
+    // @ts-expect-error
+    firstRegistryDropdownOptions.value[key]['disabled'] = true;
+};
+
+const handleInstruction = () => {
+    if (firstRegistryDropdownSelectedOption.value === null && !secondRegistryDropdown.value) {
+        message.error('Wybierz rejestr na którym chcesz wykonać operację!');
+        return;
+    }
+    if (
+        secondRegistryDropdown.value &&
+        firstRegistryDropdownSelectedOption.value === null &&
+        secondRegistryDropdownSelectedOption.value === null
+    ) {
+        message.error('Wybierz rejestry na których chcesz wykonać operację!');
+        return;
+    }
+    if (firstRegistryDropdownSelectedOption.value === null) {
+        message.error('Wybierz pierwszy rejestr na którym chcesz wykonać operację!');
+        return;
+    }
+    if (secondRegistryDropdown.value && secondRegistryDropdownSelectedOption.value === null) {
+        message.error('Wybierz drugi rejestr na którym chcesz wykonać operację!');
+        return;
+    }
+    registryInstructionsOptionsLabel.value = 'Wybierz instrukcję jaką chcesz wykonać';
+    firstRegistryDropdownOptions.value.forEach((option: any) => {
+        option.disabled = false;
+    });
+    secondRegistryDropdownOptions.value.forEach((option: any) => {
+        option.disabled = false;
+    });
+    const selectedInstructionValue = registryInstructionsOptions.value.find(
+        (option) => option.key === selectedInstruction.value,
+    )!;
+    selectedInstructionValue.instruction();
+    firstRegistryDropdown.value = false;
+    secondRegistryDropdown.value = false;
+    selectedInstruction.value = null;
+    firstRegistryDropdownSelectedOption.value = null;
+    secondRegistryDropdownSelectedOption.value = null;
+    firstRegistryDropdownSelectedOptionLabel.value = null;
+    secondRegistryDropdownSelectedOptionLabel.value = null;
 };
 </script>
 
@@ -251,23 +419,29 @@ const handleSecondRegistryDropdownSelect = (key: number) => {
             <div v-if="firstRegistryDropdown">
                 <n-dropdown
                     trigger="hover"
-                    :options="changingRegistryOptions"
+                    :options="firstRegistryDropdownOptions"
                     @select="handleFirstRegistryDropdownSelect"
                 >
-                    <n-button>{{ firstRegistryDropdownSelectedOptionLabel }}</n-button>
+                    <n-button v-if="firstRegistryDropdownSelectedOptionLabel !== null">{{
+                        'Wybrany rejestr: ' + firstRegistryDropdownSelectedOptionLabel
+                    }}</n-button>
+                    <n-button v-else>Wybierz rejestr</n-button>
                 </n-dropdown>
             </div>
             <div v-if="secondRegistryDropdown">
                 <n-dropdown
                     trigger="hover"
-                    :options="changingRegistryOptions"
+                    :options="secondRegistryDropdownOptions"
                     @select="handleSecondRegistryDropdownSelect"
                 >
-                    <n-button>{{ secondRegistryDropdownSelectedOptionLabel }}</n-button>
+                    <n-button v-if="secondRegistryDropdownSelectedOptionLabel !== null">{{
+                        'Wybrany rejestr: ' + secondRegistryDropdownSelectedOptionLabel
+                    }}</n-button>
+                    <n-button v-else>Wybierz rejestr</n-button>
                 </n-dropdown>
             </div>
             <div v-if="selectedInstruction !== null">
-                <n-button type="info">WYKONAJ INSTRUKCJĘ</n-button>
+                <n-button type="info" @click="handleInstruction">WYKONAJ INSTRUKCJĘ</n-button>
             </div>
         </div>
         <div class="changing-registry-value-wrapper">
