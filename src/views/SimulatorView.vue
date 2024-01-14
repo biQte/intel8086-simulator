@@ -12,7 +12,7 @@ let msgReactive: MessageReactive | null = null;
 
 msgReactive = message.create('Trwa ładowanie modelu 3D', {
     type: 'info',
-    duration: 10000,
+    duration: 3000,
 });
 
 const loaded = ref<boolean>(false);
