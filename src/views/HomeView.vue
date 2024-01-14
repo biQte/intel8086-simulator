@@ -4,9 +4,9 @@ import TheMenu from '../components/TheMenu.vue';
 
 <template>
     <div class="home-view">
-        <img src="/intel-logo.svg" alt="intel-logo" class="intel-logo" loading="lazy" width="300" height="198.72" />
+        <img src="/intel-logo.svg" alt="intel-logo" class="intel-logo" width="300" height="198.72" />
         <h1>Witaj!</h1>
-        <h3>Tutaj powstaje symulator procesora Intel 8086</h3>
+        <h2>Tutaj powstaje symulator procesora Intel 8086</h2>
         <TheMenu />
     </div>
 </template>
