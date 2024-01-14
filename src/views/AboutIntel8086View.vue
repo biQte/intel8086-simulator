@@ -20,7 +20,14 @@ import { NButton } from 'naive-ui';
             8086 firmie Intel przydzielono identyfikator 0x8086 na liście identyfikatorów (PCI ID) dostawców urządzeń
             dla magistrali PCI.
         </p>
-        <n-button tag="a" href="https://pl.wikipedia.org/wiki/Intel_8086" target="_blank" type="info" ghost size="large"
+        <n-button
+            tag="a"
+            href="https://pl.wikipedia.org/wiki/Intel_8086"
+            target="_blank"
+            type="info"
+            ghost
+            size="large"
+            style="color: #535bf2"
             >Czytaj więcej</n-button
         >
     </div>
