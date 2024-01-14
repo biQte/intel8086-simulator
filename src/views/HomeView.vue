@@ -6,7 +6,7 @@ import TheMenu from '../components/TheMenu.vue';
     <div class="home-view">
         <img src="/intel-logo.svg" alt="intel-logo" class="intel-logo" width="300" height="198.72" />
         <h1>Witaj!</h1>
-        <h2>Tutaj powstaje symulator procesora Intel 8086</h2>
+        <h2>Na tej stronie znajduje się symulator procesora Intel 8086</h2>
         <TheMenu />
     </div>
 </template>
